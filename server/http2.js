@@ -27,6 +27,32 @@ server.on("stream", async (stream, headers) => {
   });
 
   return stream.end(JSON.stringify({ protocol: "http2", data }));
+
+  // serve frontend 
+  if (path === "/") {
+    const html = fs.readFileSync("./public/index.html");
+    stream.respond({
+      "content-type": "text/html",
+      ":status": 200
+    });
+    return stream.end(html);
+  }
+
+  // serve static files and CSS file
+  if (path.endsWith(".js") || path.endsWith(".css")) {
+    const file = fs.readFileSync(`./public${path}`);
+    const type = path.endsWith(".js") ? "application/javascript" : "text/css";
+    stream.respond({
+      "content-type": type,
+      ":status": 200
+    });
+
+    return stream.end(file);
+  }
+
+  // fallback: return error feedback
+  stream.respond({ ":status": 404 });
+  stream.end("Not found.");
 });
 
 // server listen for connecttion
