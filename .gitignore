@@ -1,0 +1,43 @@
+# === Node ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Environment & Secrets ===
+.env
+.env.*
+*.key
+*.crt
+*.pem
+
+# === Certificates ===
+cert/
+
+# === Logs ===
+logs/
+*.log
+*.out
+*.err
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === Build Output (if added later) ===
+dist/
+build/
+.cache/
+
+# === VS Code ===
+.vscode/
+
+# === Temporary Files ===
+*.tmp
+*.swp
+*.swo
+
+
+# == Node Modules ==
+node_modules
