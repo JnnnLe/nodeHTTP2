@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny Storefront</title>
+  <link rel="stylesheet" href="./public/style.css">
+</head>
+
+<body>
+  <!-- Search input -->
+  <header class="topbar">
+    <h1>Catalog Products</h1>
+    <div class="controls">
+      <input type="text" placeholder="Search.." />
+      <select id="sort">
+        <option value="default">Sort</option>
+        <option value="price-asc">Price ↑</option>
+        <option value="price-desc">Price ↓</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- JS will fill this with cards -->
+  <main>
+    <div id="status" class="status">Loading products...</div>
+    <div id="product-grid" class="grid"></div>
+  </main>
+
+  <!-- Template for cards -->
+  <template id="product-card-template">
+    <article class="card">
+      <img class="thumb" alt="" />
+      <div class="meta">
+        <h2 class="title"></h2>
+        <p class="price"></p>
+        <button class="details">Details</button>
+      </div>
+    </article>
+  </template>
+
+  <!-- Modal product details -->
+  <div id="modal" class="modal hidden">
+    <div class="inner-modal">
+      <button id="close-modal">Close</button>
+      <img id="modal-img" alt="" />
+      <h2 id="modal-title"></h2>
+      <p id="modal-price"></p>
+      <p id="modal-descr"></p>
+    </div>
+  </div>
+
+  <!-- Load ES modules/imports and script file  -->
+  <script type="module" src="/script.js"></script>
+</body>
+
+</html>
