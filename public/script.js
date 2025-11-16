@@ -50,4 +50,21 @@ function renderGrid(list) {
   });
 };
 
+function openModal(product) {
+  document.getElementById("modal-title").textContent = product.title;
+  document.getElementById("modal-price").textContent = `$${product.price.toFixed(2)}`;
+  document.getElementById("modal-descr").textContent = product.description;
+  document.getElementById("modal-img").src = product.image;
+  document.getElementById("modal-img").alt = product.title;
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+};
+
+document.getElementById("close-modal").addEventListener("click", () => {
+  console.log("inside!")
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
+})
+
+
 fetchProducts();
