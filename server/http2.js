@@ -2,29 +2,21 @@ import fs from "fs";
 import http2 from "http2";
 import fetch from "node-fetch";
 
-// ------------------- GLOBAL ERROR LOGGING -------------------
-process.on("uncaughtException", (err) => {
-  console.error("❌ Uncaught Exception:", err.stack || err);
-});
-
-process.on("unhandledRejection", (reason) => {
-  console.error("❌ Unhandled Promise Rejection:", reason.stack || reason);
-});
-
-// ------------------- CREATE HTTP2 SECURE SERVER -------------------
+// create HTTP2 secure server
 const server = http2.createSecureServer({
   key: fs.readFileSync("./localhost-key.pem"),
   cert: fs.readFileSync("./localhost.pem"),
 });
 
-// ------------------- STREAM HANDLER -------------------
+// Handle incoming streams HTTP2 doesn't use old-school "req" and "res"
 server.on("stream", async (stream, headers) => {
+
+  // custom header
   const path = headers[":path"];
   const method = headers[":method"];
 
-  try {
-    // GET /api/products
-    if (path === "/api/products" && method === "GET") {
+  if (path === "/api/products" && method === "GET") {
+    try {
       const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
 
@@ -35,22 +27,26 @@ server.on("stream", async (stream, headers) => {
       });
 
       return stream.end(JSON.stringify({ protocol: "http2", data }));
+    } catch (err) {
+      stream.respond({ ":status": 500 });
+      return stream.end("Error fetching products");
     }
+  }
 
-    // GET /
-    if (path === "/" && method === "GET") {
-      const html = fs.readFileSync("./public/index.html");
+  // serve frontend: GET
+  if (path === "/") {
+    const html = fs.readFileSync("./public/index.html");
 
-      stream.respond({
-        "content-type": "text/html",
-        ":status": 200
-      });
+    stream.respond({
+      "content-type": "text/html",
+      ":status": 200
+    });
+    return stream.end(html);
+  }
 
-      return stream.end(html);
-    }
-
-    // Serve static JS/CSS files
-    if ((path.endsWith(".js") || path.endsWith(".css")) && method === "GET") {
+  // serve static files and CSS file
+  if (path.endsWith(".js") || path.endsWith(".css")) {
+    try {
       const file = fs.readFileSync(`./public${path}`);
       const type = path.endsWith(".js") ? "application/javascript" : "text/css";
 
@@ -60,23 +56,20 @@ server.on("stream", async (stream, headers) => {
       });
 
       return stream.end(file);
+
+
+    } catch {
+      stream.respond({ ":status": 404 });
+      return stream.end("File not found");
     }
-
-    // Fallback for other paths
-    stream.respond({ ":status": 404 });
-    stream.end("Not found.");
-
-  } catch (err) {
-    // Centralized error logging with stack traces
-    console.error(`❌ Error handling ${method} ${path}:`, err.stack || err);
-
-    // Respond to client
-    stream.respond({ ":status": 500 });
-    stream.end("Internal Server Error");
   }
+
+  // fallback: return error feedback
+  stream.respond({ ":status": 404 });
+  stream.end("Not found.");
 });
 
-// ------------------- START SERVER -------------------
+// server listen for connecttion
 server.listen(8443, () => {
-  console.log("HTTP/2 server running at https://localhost:8443");
-});
+  console.log("HTTP/2 server running https://localhost:8443");
+})
