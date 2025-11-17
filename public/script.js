@@ -61,10 +61,15 @@ function openModal(product) {
 };
 
 document.getElementById("close-modal").addEventListener("click", () => {
-  console.log("inside!")
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden", "true");
-})
+});
 
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" || e.key === "Esc") {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+  }
+});
 
 fetchProducts();
