@@ -8,10 +8,6 @@ const sort = document.getElementById("sort");
 const modal = document.getElementById("modal");
 let products = [];
 
-searchInput.addEventListener("input", () => {
-  // console.log(`Searched: ${searchInput.value}`);
-});
-
 // Fetch products 
 async function fetchProducts() {
   try {
@@ -60,16 +56,31 @@ function openModal(product) {
   modal.setAttribute("aria-hidden", "false");
 };
 
+// Close modal on click
 document.getElementById("close-modal").addEventListener("click", () => {
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden", "true");
 });
 
+// Close modal on keydown
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" || e.key === "Esc") {
     modal.classList.add("hidden");
     modal.setAttribute("aria-hidden", "true");
   }
 });
+
+// Search functionality
+searchInput.addEventListener("input", e => {
+  const query = searchInput.value.trim().toLowerCase();
+  // console.log(products);
+  //split then lowecase - if match - create new var for fn and place it into renderGrid(filtered products)
+
+  const filtered = products.filter(product =>
+    product.title.toLowerCase().includes(query) || product.description.toLowerCase().includes(query));
+
+  renderGrid(filtered);;
+});
+
 
 fetchProducts();
