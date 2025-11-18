@@ -34,7 +34,7 @@ function renderGrid(list) {
 
   list.forEach(product => {
     const node = tpl.content.cloneNode(true);
-    //each card
+    // Card
     const article = node.querySelector(".card");
     const img = node.querySelector(".thumb");
     node.querySelector(".title").textContent = product.title;
@@ -73,9 +73,6 @@ document.addEventListener("keydown", e => {
 // Search functionality
 searchInput.addEventListener("input", e => {
   const query = searchInput.value.trim().toLowerCase();
-  // console.log(products);
-  //split then lowecase - if match - create new var for fn and place it into renderGrid(filtered products)
-
   const filtered = products.filter(product =>
     product.title.toLowerCase().includes(query) || product.description.toLowerCase().includes(query));
 
