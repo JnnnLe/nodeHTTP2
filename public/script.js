@@ -79,5 +79,15 @@ searchInput.addEventListener("input", e => {
   renderGrid(filtered);;
 });
 
+// Sort functionality
+sort.addEventListener("change", e => {
+  const selectedVal = e.target.value;
+  const copy = [...products];
+  if (selectedVal === "price-asc") copy.sort((a, b) => a.price - b.price);
+  if (selectedVal === "price-desc") copy.sort((a, b) => b.price - a.price);
+
+  renderGrid(copy);
+});
+
 
 fetchProducts();
